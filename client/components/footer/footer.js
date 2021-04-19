@@ -16,7 +16,10 @@ export default class Footer extends React.Component {
         <div className="footer-row-1">
           <div className="footer-row-1-inner">
             {links.map((link, index) => {
-              if (shouldLinkBeShown(link, isAuthenticated)) {
+              if (
+                shouldLinkBeShown(link, isAuthenticated) &&
+                link.url !== undefined
+              ) {
                 return (
                   <a
                     href={link.url}
