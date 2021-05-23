@@ -169,6 +169,7 @@ export default class Login extends React.Component {
       verifyMobileNumber,
       settings,
       setIsActive,
+      setUserData,
     } = this.props;
     const {username, password, remember_me, errors} = this.state;
     const url = loginApiUrl(orgSlug);
@@ -207,6 +208,7 @@ export default class Login extends React.Component {
     })
       .then((res = {}) => {
         if (res.data) setIsActive(res.data.is_active);
+        setUserData(res.data);
         return handleAuthentication(
           settings.mobile_phone_verification,
           res.data,
@@ -478,6 +480,7 @@ Login.propTypes = {
   authenticate: PropTypes.func.isRequired,
   verifyMobileNumber: PropTypes.func.isRequired,
   setIsActive: PropTypes.func.isRequired,
+  setUserData: PropTypes.func.isRequired,
   settings: PropTypes.shape({
     mobile_phone_verification: PropTypes.bool,
   }).isRequired,
