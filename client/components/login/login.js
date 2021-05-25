@@ -207,8 +207,10 @@ export default class Login extends React.Component {
       }),
     })
       .then((res = {}) => {
-        if (res.data) setIsActive(res.data.is_active);
-        setUserData(res.data);
+        if (res.data) {
+          setIsActive(res.data.is_active);
+          setUserData(res.data);
+        }
         return handleAuthentication(
           settings.mobile_phone_verification,
           res.data,
