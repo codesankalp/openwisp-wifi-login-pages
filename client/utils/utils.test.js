@@ -144,14 +144,16 @@ describe("Validate Token tests", () => {
       cookies: new Cookies(),
       setUserData: jest.fn(),
       userData: {},
+      logout: jest.fn(),
     };
   };
   it("should return false if token is not in the cookie", async () => {
-    const {orgSlug, cookies, setUserData, userData} = getArgs();
+    const {orgSlug, cookies, setUserData, userData, logout} = getArgs();
     const result = await validateToken(cookies, orgSlug, setUserData, userData);
     expect(axios.mock.calls.length).toBe(0);
     expect(result).toBe(false);
     expect(setUserData.mock.calls.length).toBe(0);
+    expect(logout.mock.calls.length).toBe(0);
   });
   it("should return true for success validation", async () => {
     axios.mockImplementationOnce(() => {
@@ -168,20 +170,22 @@ describe("Validate Token tests", () => {
         },
       });
     });
-    const {orgSlug, cookies, setUserData, userData} = getArgs();
+    const {orgSlug, cookies, setUserData, userData, logout} = getArgs();
     cookies.set(`${orgSlug}_auth_token`, "token");
     const result = await validateToken(cookies, orgSlug, setUserData, userData);
     expect(axios).toHaveBeenCalled();
     expect(setUserData.mock.calls.length).toBe(1);
     expect(result).toBe(true);
+    expect(logout.mock.calls.length).toBe(0);
   });
   it("should return true without calling api if userData is present", async () => {
-    const {orgSlug, cookies, setUserData, userData} = getArgs();
+    const {orgSlug, cookies, setUserData, userData, logout} = getArgs();
     userData.response_code = "AUTH_TOKEN_VALIDATION_SUCCESSFUL";
     const result = await validateToken(cookies, orgSlug, setUserData, userData);
     expect(axios.mock.calls.length).toBe(0);
     expect(result).toBe(true);
     expect(setUserData.mock.calls.length).toBe(0);
+    expect(logout.mock.calls.length).toBe(0);
   });
   it("should return false when internal server error", async () => {
     jest.spyOn(global.console, "log").mockImplementation();
@@ -194,10 +198,17 @@ describe("Validate Token tests", () => {
         },
       });
     });
-    const {orgSlug, cookies, setUserData, userData} = getArgs();
-    const result = await validateToken(cookies, orgSlug, setUserData, userData);
+    const {orgSlug, cookies, setUserData, userData, logout} = getArgs();
+    const result = await validateToken(
+      cookies,
+      orgSlug,
+      setUserData,
+      userData,
+      logout,
+    );
     expect(axios.mock.calls.length).toBe(1);
     expect(result).toBe(false);
     expect(setUserData.mock.calls.length).toBe(0);
+    expect(logout.mock.calls.length).toBe(1);
   });
 });
