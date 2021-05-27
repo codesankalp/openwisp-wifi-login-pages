@@ -12,7 +12,6 @@ const handleLogout = (logout, cookies, orgSlug, setUserData) => {
     onOpen: () => toast.dismiss(mainToastId),
   });
   const {userData} = initialState;
-  console.log(userData);
   setUserData(userData);
 };
 
@@ -57,7 +56,7 @@ const validateToken = async (
     }
   }
   // returns true if user data exists and skips calling the API
-  else if (userData && Object.keys(userData).length > 0) {
+  else if (token && userData && Object.keys(userData).length > 0) {
     return true;
   } else {
     return false;

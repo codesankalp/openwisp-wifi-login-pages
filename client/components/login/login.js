@@ -163,7 +163,7 @@ export default class Login extends React.Component {
   handleSubmit(event) {
     const {setLoading} = this.context;
     if (event) event.preventDefault();
-    const {orgSlug, authenticate, settings, setUserData} = this.props;
+    const {orgSlug, authenticate, settings, userData, setUserData} = this.props;
     const {username, password, remember_me, errors} = this.state;
     const url = loginApiUrl(orgSlug);
     this.setState({
@@ -201,14 +201,16 @@ export default class Login extends React.Component {
         const {data} = error.response;
         if (
           error.response.status === 401 &&
-          settings.mobile_phone_verification
+          settings.mobile_phone_verification &&
+          data.is_active
         ) {
           return handleAuthentication(data);
         }
-        const errorText =
-          data.is_active === false
-            ? getErrorText(error, userInactiveError)
-            : getErrorText(error, loginError);
+        userData.is_active = false;
+        setUserData(userData);
+        const errorText = data.is_active
+          ? getErrorText(error, loginError)
+          : getErrorText(error, userInactiveError);
         logError(error, errorText);
         toast.error(errorText);
         this.setState({
@@ -460,6 +462,7 @@ Login.propTypes = {
   }).isRequired,
   authenticate: PropTypes.func.isRequired,
   setUserData: PropTypes.func.isRequired,
+  userData: PropTypes.object.isRequired,
   settings: PropTypes.shape({
     mobile_phone_verification: PropTypes.bool,
   }).isRequired,

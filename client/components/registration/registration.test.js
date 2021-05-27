@@ -28,7 +28,7 @@ const createTestProps = function (props, configName = "default") {
     privacyPolicy: config.privacy_policy,
     termsAndConditions: config.terms_and_conditions,
     authenticate: jest.fn(),
-    verifyMobileNumber: jest.fn(),
+    userData: {},
     setUserData: jest.fn(),
     match: {
       path: "default/registration",
@@ -364,8 +364,7 @@ describe("Registration and Mobile Phone Verification interactions", () => {
     expect(handleSubmit).toHaveBeenCalled();
     expect(axios).toHaveBeenCalledWith(axiosParam);
     expect(event.preventDefault).toHaveBeenCalled();
-    const mockVerify = component.props.verifyMobileNumber;
-    expect(mockVerify.mock.calls.length).toBe(1);
-    expect(mockVerify.mock.calls.pop()).toEqual([true]);
+    const {setUserData} = component.props;
+    expect(setUserData.mock.calls.length).toBe(1);
   });
 });
