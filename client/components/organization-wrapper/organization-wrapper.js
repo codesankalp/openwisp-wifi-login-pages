@@ -1,3 +1,5 @@
+/* eslint-disable camelcase */
+/* eslint jsx-a11y/label-has-associated-control: 0 */
 import "./index.css";
 
 import PropTypes from "prop-types";
@@ -56,9 +58,13 @@ export default class OrganizationWrapper extends React.Component {
       title,
       favicon,
       isAuthenticated,
-      needsMobilePhoneVerification,
-      isActive,
+      userData,
+      settings,
     } = organization.configuration;
+    const {is_active, is_verified} = userData;
+    const needsMobilePhoneVerification =
+      !is_verified && settings.mobile_phone_verification;
+    console.log(userData, needsMobilePhoneVerification, is_verified);
     const orgSlug = organization.configuration.slug;
     const cssPath = organization.configuration.css_path;
     const userAutoLogin = localStorage.getItem("userAutoLogin") === "true";
@@ -107,7 +113,7 @@ export default class OrganizationWrapper extends React.Component {
                     if (
                       isAuthenticated &&
                       needsMobilePhoneVerification === false &&
-                      isActive
+                      is_active
                     ) {
                       return <Redirect to={`/${orgSlug}/status`} />;
                     }
@@ -149,7 +155,7 @@ export default class OrganizationWrapper extends React.Component {
                 <Route
                   path={`${match.path}/login`}
                   render={(props) => {
-                    if (isAuthenticated && isActive)
+                    if (isAuthenticated && is_active)
                       return <Redirect to={`/${orgSlug}/status`} />;
                     return <Login {...props} />;
                   }}
@@ -160,7 +166,7 @@ export default class OrganizationWrapper extends React.Component {
                     if (
                       isAuthenticated &&
                       !needsMobilePhoneVerification &&
-                      isActive
+                      is_active
                     )
                       return (
                         <Suspense fallback={<Loader full={false} />}>
@@ -170,7 +176,7 @@ export default class OrganizationWrapper extends React.Component {
                     if (
                       isAuthenticated &&
                       needsMobilePhoneVerification &&
-                      isActive
+                      is_active
                     )
                       return (
                         <Redirect
@@ -293,7 +299,10 @@ OrganizationWrapper.propTypes = {
       favicon: PropTypes.string,
       isAuthenticated: PropTypes.bool,
       needsMobilePhoneVerification: PropTypes.bool,
-      isActive: PropTypes.bool,
+      userData: PropTypes.object,
+      settings: PropTypes.shape({
+        mobile_phone_verification: PropTypes.bool,
+      }),
     }),
     exists: PropTypes.bool,
   }).isRequired,

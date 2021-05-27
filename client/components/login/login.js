@@ -163,14 +163,7 @@ export default class Login extends React.Component {
   handleSubmit(event) {
     const {setLoading} = this.context;
     if (event) event.preventDefault();
-    const {
-      orgSlug,
-      authenticate,
-      verifyMobileNumber,
-      settings,
-      setIsActive,
-      setUserData,
-    } = this.props;
+    const {orgSlug, authenticate, settings, setUserData} = this.props;
     const {username, password, remember_me, errors} = this.state;
     const url = loginApiUrl(orgSlug);
     this.setState({
@@ -179,10 +172,8 @@ export default class Login extends React.Component {
     localStorage.setItem("rememberMe", remember_me);
     setLoading(true);
 
-    const handleAuthentication = (
-      needsMobileVerification = false,
-      data = {},
-    ) => {
+    const handleAuthentication = (data) => {
+      setUserData(data);
       if (!remember_me)
         sessionStorage.setItem(`${orgSlug}_auth_token`, data.key);
       authenticate(true);
@@ -190,9 +181,6 @@ export default class Login extends React.Component {
         toastId: mainToastId,
       });
       setLoading(false);
-      if (needsMobileVerification) {
-        verifyMobileNumber(true);
-      }
     };
 
     return axios({
@@ -207,24 +195,15 @@ export default class Login extends React.Component {
       }),
     })
       .then((res = {}) => {
-        if (res.data) {
-          setIsActive(res.data.is_active);
-          setUserData(res.data);
-        }
-        return handleAuthentication(
-          settings.mobile_phone_verification,
-          res.data,
-        );
+        return handleAuthentication(res.data);
       })
       .catch((error) => {
         const {data} = error.response;
-        setIsActive(data.is_active);
         if (
           error.response.status === 401 &&
-          settings.mobile_phone_verification &&
-          data.is_active
+          settings.mobile_phone_verification
         ) {
-          return handleAuthentication(true);
+          return handleAuthentication(data);
         }
         const errorText =
           data.is_active === false
@@ -480,8 +459,6 @@ Login.propTypes = {
     content: PropTypes.object,
   }).isRequired,
   authenticate: PropTypes.func.isRequired,
-  verifyMobileNumber: PropTypes.func.isRequired,
-  setIsActive: PropTypes.func.isRequired,
   setUserData: PropTypes.func.isRequired,
   settings: PropTypes.shape({
     mobile_phone_verification: PropTypes.bool,

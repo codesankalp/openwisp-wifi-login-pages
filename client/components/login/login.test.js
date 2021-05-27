@@ -30,7 +30,6 @@ const createTestProps = (props) => {
     settings: {mobile_phone_verification: false},
     authenticate: jest.fn(),
     verifyMobileNumber: jest.fn(),
-    setIsActive: jest.fn(),
     setUserData: jest.fn(),
     match: {
       path: "default/login",
@@ -331,34 +330,7 @@ describe("<Login /> interactions", () => {
     expect(wrapper.find("#username").length).toEqual(1);
     expect(wrapper.find(".row.phone-number").length).toEqual(0);
   });
-  it("should store token in sessionStorage when remember me is unchecked and rememberMe in localstorage", () => {
-    const data = {
-      data: {
-        key: "test-token",
-      },
-    };
-
-    axios.mockImplementationOnce(() => {
-      return Promise.resolve(data);
-    });
-
-    wrapper
-      .find("#remember_me")
-      .simulate("change", {target: {checked: false, name: "remember_me"}});
-
-    return wrapper
-      .instance()
-      .handleSubmit()
-      .then(() => {
-        expect(wrapper.instance().state.errors).toEqual({});
-        expect(sessionStorage.getItem("default_auth_token")).toEqual(
-          "test-token",
-        );
-        expect(localStorage.getItem("rememberMe")).toEqual("false");
-        expect(wrapper.instance().props.authenticate.mock.calls.length).toBe(1);
-      });
-  });
-  it("should not execute verifyMobileNumber if user is inactive and must execute setIsActive", async () => {
+  it("should not execute verifyMobileNumber if user is inactive and must execute setUserData", async () => {
     props.settings = {mobile_phone_verification: true};
     wrapper = shallow(<Login {...props} />, {context: loadingContextValue});
 
@@ -387,8 +359,35 @@ describe("<Login /> interactions", () => {
     expect(verifyMock.calls.length).toBe(0);
     const authenticateMock = wrapper.instance().props.authenticate.mock;
     expect(authenticateMock.calls.length).toBe(0);
-    const setIsActiveMock = wrapper.instance().props.setIsActive.mock;
-    expect(setIsActiveMock.calls.length).toBe(1);
+    const setUserDataMock = wrapper.instance().props.setUserData.mock;
+    expect(setUserDataMock.calls.length).toBe(1);
+  });
+  it("should store token in sessionStorage when remember me is unchecked and rememberMe in localstorage", () => {
+    const data = {
+      data: {
+        key: "test-token",
+      },
+    };
+
+    axios.mockImplementationOnce(() => {
+      return Promise.resolve(data);
+    });
+
+    wrapper
+      .find("#remember_me")
+      .simulate("change", {target: {checked: false, name: "remember_me"}});
+
+    return wrapper
+      .instance()
+      .handleSubmit()
+      .then(() => {
+        expect(wrapper.instance().state.errors).toEqual({});
+        expect(sessionStorage.getItem("default_auth_token")).toEqual(
+          "test-token",
+        );
+        expect(localStorage.getItem("rememberMe")).toEqual("false");
+        expect(wrapper.instance().props.authenticate.mock.calls.length).toBe(1);
+      });
   });
   it("should show error toast when server error", () => {
     axios.mockImplementationOnce(() => {

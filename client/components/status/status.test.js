@@ -58,7 +58,6 @@ const createTestProps = (props) => {
     },
     logout: jest.fn(),
     verifyMobileNumber: jest.fn(),
-    setIsActive: jest.fn(),
     setUserData: jest.fn(),
     userData: {},
     ...props,
@@ -598,9 +597,9 @@ describe("<Status /> interactions", () => {
     };
     wrapper.setProps({userData});
     const handleLogout = jest.spyOn(wrapper.instance(), "handleLogout");
-    const setIsActiveMock = wrapper.instance().props.setIsActive.mock;
+    const setUserDataMock = wrapper.instance().props.setUserData.mock;
     await tick();
-    expect(setIsActiveMock.calls.length).toBe(1);
+    expect(setUserDataMock.calls.length).toBe(1);
     expect(handleLogout).toHaveBeenCalledWith(false);
   });
   it("should toggle logout modal", () => {
