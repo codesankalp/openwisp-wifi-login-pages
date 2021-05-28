@@ -275,6 +275,7 @@ describe("<Login /> interactions", () => {
           statusText: "unauthorized",
           data: {
             is_active: true,
+            is_verified: false
           },
         },
       });
@@ -298,7 +299,7 @@ describe("<Login /> interactions", () => {
     expect(handleSubmit).toHaveBeenCalled();
     const setUserDataMock = login.props().setUserData.mock;
     expect(setUserDataMock.calls.length).toBe(1);
-    expect(setUserDataMock.calls.pop()).toEqual([{is_active: true}]);
+    expect(setUserDataMock.calls.pop()).toEqual([{is_active: true, is_verified: false}]);
     const authenticateMock = login.props().authenticate.mock;
     expect(authenticateMock.calls.length).toBe(1);
     expect(authenticateMock.calls.pop()).toEqual([true]);
@@ -340,6 +341,7 @@ describe("<Login /> interactions", () => {
           statusText: "unauthorized",
           data: {
             is_active: false,
+            is_verified: true,
           },
         },
       });
