@@ -57,7 +57,6 @@ const createTestProps = (props) => {
       search: "?macaddr=4e:ed:11:2b:17:ae",
     },
     logout: jest.fn(),
-    verifyMobileNumber: jest.fn(),
     setUserData: jest.fn(),
     userData: {},
     ...props,

@@ -1,7 +1,6 @@
 import {
   PARSE_ORGANIZATIONS,
   SET_AUTHENTICATION_STATUS,
-  SET_MOBILE_PHONE_VERIFICATION_STATUS,
   SET_ORGANIZATION_CONFIG,
   SET_ORGANIZATION_STATUS,
   SET_USER_DATA,
@@ -41,14 +40,6 @@ export const organization = (
         configuration: {
           ...state.configuration,
           isAuthenticated: action.payload,
-        },
-      };
-    case SET_MOBILE_PHONE_VERIFICATION_STATUS:
-      return {
-        ...state,
-        configuration: {
-          ...state.configuration,
-          needsMobilePhoneVerification: action.payload,
         },
       };
     case SET_USER_DATA:
