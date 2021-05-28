@@ -12,6 +12,7 @@ import PhoneInput from "react-phone-input-2";
 import {loadingContextValue} from "../../utils/loading-context";
 import getConfig from "../../utils/get-config";
 import Login from "./login";
+import tick from "../../utils/tick";
 
 jest.mock("axios");
 
@@ -260,6 +261,48 @@ describe("<Login /> interactions", () => {
           });
       });
   });
+  it("should execute setUserData if mobile phone verification needed", async () => {
+    props.settings = {mobile_phone_verification: true};
+    wrapper = mountComponent(props);
+    expect(true).toBe(true);
+    const login = wrapper.find(Login);
+    const handleSubmit = jest.spyOn(login.instance(), "handleSubmit");
+
+    axios.mockImplementationOnce(() => {
+      return Promise.reject({
+        response: {
+          status: 401,
+          statusText: "unauthorized",
+          data: {
+            is_active: true,
+          },
+        },
+      });
+    });
+
+    expect(wrapper.exists(PhoneInput)).toBe(true);
+    expect(wrapper.find(".row.phone-number").length).toEqual(1);
+    expect(wrapper.find("#username").length).toEqual(1);
+    expect(login.state("username")).toEqual("");
+    wrapper.find("#username").simulate("change", {
+      target: {value: "+393660011333", name: "username"},
+    });
+    expect(login.state("username")).not.toEqual("");
+    wrapper
+      .find("#password")
+      .simulate("change", {target: {value: "test password", name: "password"}});
+    expect(login.state("password")).toEqual("test password");
+    const event = {preventDefault: () => {}};
+    wrapper.find("form").simulate("submit", event);
+    await tick();
+    expect(handleSubmit).toHaveBeenCalled();
+    const setUserDataMock = login.props().setUserData.mock;
+    expect(setUserDataMock.calls.length).toBe(1);
+    expect(setUserDataMock.calls.pop()).toEqual([{is_active: true}]);
+    const authenticateMock = login.props().authenticate.mock;
+    expect(authenticateMock.calls.length).toBe(1);
+    expect(authenticateMock.calls.pop()).toEqual([true]);
+  });
   it("phone_number field should be present if mobile phone verification is on", async () => {
     props.settings = {mobile_phone_verification: true};
     wrapper = mountComponent(props);
@@ -315,6 +358,7 @@ describe("<Login /> interactions", () => {
     expect(authenticateMock.calls.length).toBe(0);
     const setUserDataMock = wrapper.instance().props.setUserData.mock;
     expect(setUserDataMock.calls.length).toBe(1);
+    expect(setUserDataMock.calls.pop()).toEqual([{is_active: false}]);
   });
   it("should store token in sessionStorage when remember me is unchecked and rememberMe in localstorage", () => {
     const data = {
