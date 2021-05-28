@@ -9,12 +9,12 @@ import getConfig from "../../utils/get-config";
 import logError from "../../utils/log-error";
 import tick from "../../utils/tick";
 import Status from "./status";
-import validateToken from "../../utils/validateToken";
+import validateToken from "../../utils/validate-token";
 
 jest.mock("axios");
 jest.mock("../../utils/get-config");
 jest.mock("../../utils/log-error");
-jest.mock("../../utils/validateToken");
+jest.mock("../../utils/validate-token");
 logError.mockImplementation(jest.fn());
 
 const defaultConfig = getConfig("default");

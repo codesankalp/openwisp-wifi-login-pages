@@ -23,7 +23,7 @@ import logError from "../../utils/log-error";
 import Contact from "../contact-box";
 import shouldLinkBeShown from "../../utils/should-link-be-shown";
 import handleSession from "../../utils/session";
-import validateToken from "../../utils/validateToken";
+import validateToken from "../../utils/validate-token";
 import {initialState} from "../../reducers/organization";
 
 export default class Status extends React.Component {

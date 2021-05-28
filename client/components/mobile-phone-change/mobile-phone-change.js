@@ -20,7 +20,7 @@ import handleChange from "../../utils/handle-change";
 import submitOnEnter from "../../utils/submit-on-enter";
 import Contact from "../contact-box";
 import handleSession from "../../utils/session";
-import validateToken from "../../utils/validateToken";
+import validateToken from "../../utils/validate-token";
 
 class MobilePhoneChange extends React.Component {
   constructor(props) {

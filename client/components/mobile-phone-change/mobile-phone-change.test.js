@@ -14,11 +14,11 @@ import {loadingContextValue} from "../../utils/loading-context";
 import getConfig from "../../utils/get-config";
 import tick from "../../utils/tick";
 import MobilePhoneChangeWrapped from "./mobile-phone-change";
-import validateToken from "../../utils/validateToken";
+import validateToken from "../../utils/validate-token";
 
 const MobilePhoneChange = MobilePhoneChangeWrapped.WrappedComponent;
 jest.mock("../../utils/get-config");
-jest.mock("../../utils/validateToken");
+jest.mock("../../utils/validate-token");
 jest.mock("axios");
 
 const createTestProps = function (props, configName = "test-org-2") {

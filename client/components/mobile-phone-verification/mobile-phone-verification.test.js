@@ -10,10 +10,10 @@ import {loadingContextValue} from "../../utils/loading-context";
 import tick from "../../utils/tick";
 import getConfig from "../../utils/get-config";
 import MobilePhoneVerification from "./mobile-phone-verification";
-import validateToken from "../../utils/validateToken";
+import validateToken from "../../utils/validate-token";
 
 jest.mock("../../utils/get-config");
-jest.mock("../../utils/validateToken");
+jest.mock("../../utils/validate-token");
 jest.mock("axios");
 
 const createTestProps = function (props, configName = "test-org-2") {

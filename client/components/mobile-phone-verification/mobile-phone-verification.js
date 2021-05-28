@@ -21,7 +21,7 @@ import logError from "../../utils/log-error";
 import handleChange from "../../utils/handle-change";
 import Contact from "../contact-box";
 import handleSession from "../../utils/session";
-import validateToken from "../../utils/validateToken";
+import validateToken from "../../utils/validate-token";
 import {initialState} from "../../reducers/organization";
 
 export default class MobilePhoneVerification extends React.Component {

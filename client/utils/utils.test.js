@@ -7,7 +7,7 @@ import getParameterByName from "./get-parameter-by-name";
 import renderAdditionalInfo from "./render-additional-info";
 import shouldLinkBeShown from "./should-link-be-shown";
 import tick from "./tick";
-import validateToken from "./validateToken";
+import validateToken from "./validate-token";
 
 jest.mock("axios");
 
