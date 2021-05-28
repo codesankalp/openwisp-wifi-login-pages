@@ -162,8 +162,11 @@ describe("Change Phone Number: standard flow", () => {
       "/test-org-2/mobile-phone-verification",
     );
     expect(lastConsoleOutuput).toBe(null);
-    const mocksetUserData = component.instance().props.setUserData;
-    expect(mocksetUserData.mock.calls.length).toBe(1);
+    const setUserDataMock = component.instance().props.setUserData.mock;
+    expect(setUserDataMock.calls.length).toBe(1);
+    expect(setUserDataMock.calls.pop()).toEqual([
+      {is_verified: false, phone_number: "+393660011333"},
+    ]);
   });
 
   it("should render field error", async () => {

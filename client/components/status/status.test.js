@@ -159,6 +159,10 @@ describe("<Status /> interactions", () => {
     await tick();
     expect(wrapper.instance().state.activeSessions.length).toBe(1);
     expect(wrapper.instance().props.logout).toHaveBeenCalled();
+    expect(wrapper.instance().props.setUserData).toHaveBeenCalledWith({
+      is_active: true,
+      is_verified: true,
+    });
   });
 
   it("test componentDidMount lifecycle method", async () => {

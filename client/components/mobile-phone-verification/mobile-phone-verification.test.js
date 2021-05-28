@@ -152,6 +152,9 @@ describe("Mobile Phone Token verification: standard flow", () => {
     wrapper.find("form").simulate("submit", event);
     await tick();
     expect(setUserDataMock.calls.length).toBe(1);
+    userData.is_active = true;
+    userData.is_verified = true;
+    expect(setUserDataMock.calls.pop()).toEqual([userData]);
     expect(
       MobilePhoneVerification.prototype.handleSubmit.mock.calls.length,
     ).toBe(1);
