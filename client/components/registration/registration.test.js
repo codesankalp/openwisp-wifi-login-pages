@@ -261,6 +261,63 @@ describe("<Registration /> interactions", () => {
       "location (optional)",
     );
   });
+  it("should execute setUserData", async () => {
+    axios.mockImplementationOnce(() => {
+      return Promise.resolve();
+    });
+    wrapper = shallow(<Registration {...props} />, {
+      context: loadingContextValue,
+      disableLifecycleMethods: true,
+    });
+    const event = {preventDefault: () => {}};
+    const errorSpyToast = jest.spyOn(toast, "error");
+    const setUserDataMock = wrapper.instance().props.setUserData.mock;
+    wrapper.setState({
+      password1: "password",
+      password2: "password",
+    });
+    wrapper.instance().handleSubmit(event);
+    await tick();
+    expect(wrapper.instance().state.errors).toEqual({});
+    expect(wrapper.instance().state.success).toEqual(true);
+    expect(wrapper.find(".success")).toHaveLength(1);
+    expect(wrapper.instance().props.authenticate.mock.calls.length).toBe(1);
+    expect(wrapper.instance().props.setUserData.mock.calls.length).toBe(1);
+    expect(lastConsoleOutuput).toBe(null);
+    expect(errorSpyToast.mock.calls.length).toBe(3);
+    lastConsoleOutuput = null;
+    expect(setUserDataMock.calls.length).toBe(1);
+    expect(setUserDataMock.calls.pop()).toEqual([{is_active: true}]);
+  });
+  it("should execute setUserData with is_verified when mobile phone verification is needed", async () => {
+    axios.mockImplementationOnce(() => {
+      return Promise.resolve();
+    });
+    props.settings = {mobile_phone_verification: true};
+    wrapper = shallow(<Registration {...props} />, {
+      context: loadingContextValue,
+      disableLifecycleMethods: true,
+    });
+    const event = {preventDefault: () => {}};
+    const errorSpyToast = jest.spyOn(toast, "error");
+    const setUserDataMock = wrapper.instance().props.setUserData.mock;
+    wrapper.setState({
+      password1: "password",
+      password2: "password",
+    });
+    wrapper.instance().handleSubmit(event);
+    await tick();
+    expect(wrapper.instance().state.errors).toEqual({});
+    expect(wrapper.instance().state.success).toEqual(true);
+    expect(wrapper.find(".success")).toHaveLength(1);
+    expect(wrapper.instance().props.authenticate.mock.calls.length).toBe(1);
+    expect(wrapper.instance().props.setUserData.mock.calls.length).toBe(1);
+    expect(errorSpyToast.mock.calls.length).toBe(3);
+    expect(setUserDataMock.calls.length).toBe(1);
+    expect(setUserDataMock.calls.pop()).toEqual([
+      {is_active: true, is_verified: false},
+    ]);
+  });
 });
 
 describe("Registration and Mobile Phone Verification interactions", () => {
