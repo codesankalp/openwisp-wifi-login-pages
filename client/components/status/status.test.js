@@ -243,8 +243,9 @@ describe("<Status /> interactions", () => {
       is_active: true,
       phone_number: "",
     };
+    const setLoading = jest.fn();
     wrapper = shallow(<Status {...props} />, {
-      context: {setLoading: jest.fn()},
+      context: {setLoading},
     });
     wrapper.setProps({userData});
     await tick();
@@ -253,7 +254,7 @@ describe("<Status /> interactions", () => {
     );
     expect(Status.prototype.getUserActiveRadiusSessions).toHaveBeenCalled();
     expect(wrapper.instance().state.activeSessions.length).toBe(1);
-
+    expect(setLoading.mock.calls.length).toBe(2);
     wrapper.setProps({
       location: {
         search: "",

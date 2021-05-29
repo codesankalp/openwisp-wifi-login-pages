@@ -58,6 +58,7 @@ export default class Status extends React.Component {
 
   async componentDidMount() {
     const {cookies, orgSlug, settings, setUserData, logout} = this.props;
+    const {setLoading} = this.context;
     let {userData} = this.props;
     this.setState({
       rememberMe: localStorage.getItem("rememberMe") === "true",
@@ -78,7 +79,7 @@ export default class Status extends React.Component {
       } catch {
         //
       }
-
+      setLoading(true);
       const isValid = await validateToken(
         cookies,
         orgSlug,
@@ -86,6 +87,7 @@ export default class Status extends React.Component {
         userData,
         logout,
       );
+      setLoading(false);
       if (isValid) {
         ({userData} = this.props);
         const {
