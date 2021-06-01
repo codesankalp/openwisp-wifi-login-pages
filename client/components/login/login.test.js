@@ -358,11 +358,19 @@ describe("<Login /> interactions", () => {
 
     const event = {preventDefault: () => {}};
     await wrapper.instance().handleSubmit(event);
+    const spyToast = jest.spyOn(dependency.toast, "error");
     const authenticateMock = wrapper.instance().props.authenticate.mock;
     expect(authenticateMock.calls.length).toBe(0);
     const setUserDataMock = wrapper.instance().props.setUserData.mock;
     expect(setUserDataMock.calls.length).toBe(1);
-    expect(setUserDataMock.calls.pop()).toEqual([{is_active: false}]);
+    expect(setUserDataMock.calls.pop()).toEqual([
+      {is_active: false, is_verified: true},
+    ]);
+    expect(wrapper.instance().state.errors).toEqual({
+      username: "",
+      password: "",
+    });
+    expect(spyToast).toHaveBeenCalled();
   });
   it("should store token in sessionStorage when remember me is unchecked and rememberMe in localstorage", () => {
     const data = {

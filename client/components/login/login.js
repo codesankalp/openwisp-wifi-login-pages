@@ -163,7 +163,7 @@ export default class Login extends React.Component {
   handleSubmit(event) {
     const {setLoading} = this.context;
     if (event) event.preventDefault();
-    const {orgSlug, authenticate, settings, userData, setUserData} = this.props;
+    const {orgSlug, authenticate, settings, setUserData} = this.props;
     const {username, password, remember_me, errors} = this.state;
     const url = loginApiUrl(orgSlug);
     this.setState({
@@ -173,7 +173,6 @@ export default class Login extends React.Component {
     setLoading(true);
 
     const handleAuthentication = (data) => {
-      setUserData(data);
       if (!remember_me)
         sessionStorage.setItem(`${orgSlug}_auth_token`, data.key);
       authenticate(true);
@@ -195,10 +194,12 @@ export default class Login extends React.Component {
       }),
     })
       .then((res = {}) => {
+        setUserData(res.data);
         return handleAuthentication(res.data);
       })
       .catch((error) => {
         const {data} = error.response;
+        setUserData(data);
         if (
           error.response.status === 401 &&
           settings.mobile_phone_verification &&
@@ -206,11 +207,10 @@ export default class Login extends React.Component {
         ) {
           return handleAuthentication(data);
         }
-        userData.is_active = false;
-        setUserData(userData);
-        const errorText = data.is_active
-          ? getErrorText(error, loginError)
-          : getErrorText(error, userInactiveError);
+        const errorText =
+          data.is_active === false
+            ? getErrorText(error, userInactiveError)
+            : getErrorText(error, loginError);
         logError(error, errorText);
         toast.error(errorText);
         this.setState({

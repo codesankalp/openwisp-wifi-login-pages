@@ -58,7 +58,9 @@ const validateToken = async (
   // returns true if user data exists and skips calling the API
   else if (token && userData && Object.keys(userData).length > 0) {
     return true;
-  } else {
+  }
+  // returns false if token is invalid or user data is empty
+  else {
     return false;
   }
 };
