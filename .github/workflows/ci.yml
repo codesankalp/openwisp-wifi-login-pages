@@ -85,9 +85,6 @@ jobs:
       - name: Running OpenWISP WiFi Login Pages
         run: yarn start &
 
-      - name: Tests
-        run: yarn coverage
-
       - name: geckodriver/firefox
         run: |
           echo "geckodriver/firefox"
@@ -95,6 +92,9 @@ jobs:
           geckodriver --version
           which firefox
           firefox --version
+
+      - name: Tests
+        run: yarn coverage
 
       - name: Browser Tests
         run: |
