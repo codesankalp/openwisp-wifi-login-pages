@@ -62,14 +62,32 @@ jobs:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: ${{ runner.os }}-yarn-
+      
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
 
       - name: Installing dependencies
         run: |
           yarn install
           yarn setup
+      
+      - name: Installing and Running OpenWISP Radius
+        run: |
+          git clone https://github.com/openwisp/openwisp-radius/
+          cd openwisp-radius && pip install -e .
+          ./tests/manage.py migrate
+          ./tests/manage.py runserver &
+
+      - name: Running Client and Server
+        run: yarn start &
 
       - name: Tests
         run: yarn coverage
+
+      - name: Browser Tests
+        run: yarn selenium-test
 
       - name: Coveralls
         uses: coverallsapp/github-action@master
